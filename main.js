@@ -1,4 +1,5 @@
 let items = [];
+let itemAEditar
 
 const form = document.getElementById('form-itens')
 const itemInput = document.getElementById('receber-item')
@@ -53,9 +54,10 @@ function mostrarItems() {
                 <li class="item-compra is-flex is-justify-content-space-between" data-value="${index}">
                     <div>
                         <input type="checkbox" class="is-clickable" />
-                        <input type="text" class="is-size-5" value="${elemento.valor}"></input>
+                        <input type="text" class="is-size-5" value="${elemento.valor}" ${index !== Number(itemAEditar) ? 'disabled': ''}></input>
                     </div>
                     <div>
+                        ${ index === Number(itemAEditar) ? '<button onclick="salvarEdicao()" ><i class="fa-regular fa-floppy-disk is-clickable"></i></button>' :'<i class="fa-regular is-clickable fa-pen-to-square editar"></i>'}
                         <i class="fa-solid fa-trash is-clickable deletar"></i>
                     </div>
                 </li>
@@ -70,9 +72,35 @@ function mostrarItems() {
         elemento.addEventListener('click', (evento)=> {
             const valorElemento = evento.target.parentElement.parentElement.getAttribute('data-value')
             items[valorElemento].isCheck = evento.target.checked
-            console.log('ormos')
             mostrarItems()
         })
     })
+
+    const deletarObjetos = document.querySelectorAll('.deletar')
+    deletarObjetos.forEach((elemento)=> {
+        elemento.addEventListener('click', (evento)=> {
+            const valorElemento = evento.target.parentElement.parentElement.getAttribute('data-value')
+            items.splice(valorElemento,1)
+            mostrarItems()
+        })
+        
+    })
+
+    const editarItens = document.querySelectorAll('.editar')
+    editarItens.forEach((elemento)=> {
+        elemento.addEventListener('click', (evento)=> {
+            itemAEditar = evento.target.parentElement.parentElement.getAttribute('data-value')
+            mostrarItems()
+        })
+        
+    })
+
+}
+
+function salvarEdicao() {
+    const itemEditado = document.querySelector(`[data-value="${itemAEditar}"] input[type="text"]`)
+    items[itemAEditar].valor = itemEditado.value;
+    itemAEditar = -1
+    mostrarItems()
 
 }
